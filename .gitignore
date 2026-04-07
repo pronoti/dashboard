@@ -4,3 +4,4 @@ main.py
 /world_gdp.csv
 __pycache__/
 *.pyc
+.DS_Store
