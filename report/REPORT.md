@@ -1,24 +1,5 @@
 ﻿# Economic Report Dashboard: Turkey
 
-## Assignment Cover Sheet (Complete and Sign Before Submission)
-
-- Programme Year: `2024-2025`
-- Programme Title: `MSc Software Design with AI`
-- Module Title: `Data Visualisation (AL_KSAIM_9)`
-- Lecturer Name: `Dr Mark Daly`
-- Visualisation Title: `Economic Report Dashboard: Turkey`
-- Student Number: `<ADD STUDENT NUMBER>`
-- Student Name: `<ADD NAME>`
-- Date Submitted: `<ADD DATE>`
-
-Declaration of Authenticity:
-
-I confirm that I have read and understood the assignment instructions and that this submission represents my own work, except where sources are explicitly referenced.
-
-Signature: ____________________    Date: ____________________
-
----
-
 ## Table of Contents
 
 1. [List of Figures](#list-of-figures)
@@ -166,7 +147,7 @@ This report used the Turkey economic dashboard to examine GDP growth, trade flow
 
 ---
 
-## References (Vancouver Style)
+## References
 
 1. World Bank. GDP growth (annual %) [Internet]. Data360; [cited 2026 Apr 7]. Available from: https://data360.worldbank.org/en/indicator/WB_WDI_NY_GDP_MKTP_KD_ZG
 2. World Bank. Exports as a percentage of GDP [Internet]. Data360; [cited 2026 Apr 7]. Available from: https://data360.worldbank.org/en/indicator/WEF_GCIHH_EXPGDP
