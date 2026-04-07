@@ -253,7 +253,7 @@ app.title = f"{COUNTRY_NAME} Economic Dashboard"
 app.layout = html.Div([
     # Header
     html.Div([
-        html.H1(f"🇹🇷 {COUNTRY_NAME} Economic Dashboard",
+        html.H1(f"{COUNTRY_NAME} Economic Dashboard",
                 style={"textAlign": "center", "color": "white", "margin": "0"}),
         html.P("Macroeconomic indicators for Türkiye", 
                style={"textAlign": "center", "color": "#ccc", "margin": "10px 0 0"})
@@ -312,6 +312,4 @@ app.layout = html.Div([
 ], style={"fontFamily": "Arial, sans-serif", "backgroundColor": "#f5f5f5", "minHeight": "100vh"})
 
 if __name__ == "__main__":
-    print("Starting Turkey Economic Dashboard...")
-    print("Open your browser and go to: http://127.0.0.1:8050")
     app.run(debug=True, host='127.0.0.1', port=8050)
