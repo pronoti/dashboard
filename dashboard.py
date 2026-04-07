@@ -6,7 +6,7 @@ from dash import dcc, html
 from pathlib import Path
 
 COUNTRY_CODE = "TUR"
-COUNTRY_NAME = "Türkiye"
+COUNTRY_NAME = "Turkey"
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
 
@@ -143,7 +143,7 @@ fig_balance.add_trace(go.Scatter(
 ))
 fig_balance.add_hline(y=0, line_dash="dash", line_color="black", opacity=0.4)
 fig_balance.update_layout(template="plotly_white",
-                          title="Trade Balance (Exports − Imports, % of GDP)",
+                          title="Trade Balance (Exports - Imports, % of GDP)",
                           xaxis_title="Year", yaxis_title="% of GDP")
 
 # 4. Unemployment
@@ -166,13 +166,13 @@ for label, color in [("Male", "#aec7e8"), ("Female", "#f7b6d2")]:
             line=dict(color=color, width=1.5, dash="dot"),
         ))
 fig_unem.update_layout(template="plotly_white",
-                       title="Unemployment Rate by Gender (%, Ages 15–24)",
+                       title="Unemployment Rate by Gender (%, Ages 15-24)",
                        xaxis_title="Year", yaxis_title="Unemployment (%)",
                        hovermode="x unified")
 
 # 5. Inflation
 fig_infl = px.line(infl, x="TIME_PERIOD", y="inflation_rate",
-                   title="Inflation Rate — Average Consumer Prices (Annual %)",
+                   title="Inflation Rate - Average Consumer Prices (Annual %)",
                    labels={"TIME_PERIOD": "Year", "inflation_rate": "Inflation (%)"})
 fig_infl.add_hline(y=0, line_dash="dash", line_color="black", opacity=0.3)
 fig_infl.update_traces(line_color="#ff7f0e", line_width=2.5,
@@ -203,17 +203,22 @@ fig_overlay = go.Figure(go.Bar(
     marker_color=_colors,
     text=[f"{v}%" for v in _values],
     textposition="auto",
+    marker_line_color="#ffffff",
+    marker_line_width=1,
 ))
 fig_overlay.update_layout(
-    title="Türkiye Economic Indicators Overview (Latest Values)",
+    title="Turkey Economic Indicators Overview (Latest Values)",
     template="plotly_white",
+    hovermode="y unified",
     xaxis=dict(
         title="Value (%)",
+        zeroline=True,
+        zerolinecolor="#d9d9d9",
         range=[min(min(_values) - 10, -10), max(_values) + 30]
     ),
     yaxis=dict(autorange="reversed"),
-    height=420,
-    margin=dict(l=180, r=100, t=50, b=40),
+    height=450,
+    margin=dict(l=120, r=40, t=60, b=50),
 )
 
 
@@ -222,10 +227,12 @@ fig_overlay.update_layout(
 def last_value(df, col="OBS_VALUE"):
     return round(float(df[col].iloc[-1]), 2) if not df.empty else "N/A"
 
-def kpi_card(title, value, unit="", color="#1f77b4"):
+def kpi_card(title, value, unit="", color="#1f77b4", year=None):
+    subtitle = f"Latest year: {year}" if year not in (None, "N/A") else "Latest year: N/A"
     return html.Div([
         html.H4(title, style={"margin": "0 0 8px", "fontSize": "14px", "color": "#666"}),
-        html.H2(f"{value}{unit}", style={"margin": "0", "color": color, "fontSize": "28px"})
+        html.H2(f"{value}{unit}", style={"margin": "0", "color": color, "fontSize": "28px"}),
+        html.P(subtitle, style={"margin": "8px 0 0", "fontSize": "12px", "color": "#888"})
     ], style={
         "background": "white", "padding": "20px", "borderRadius": "8px",
         "textAlign": "center", "boxShadow": "0 2px 4px rgba(0,0,0,0.1)",
@@ -255,7 +262,7 @@ app.layout = html.Div([
     html.Div([
         html.H1(f"{COUNTRY_NAME} Economic Dashboard",
                 style={"textAlign": "center", "color": "white", "margin": "0"}),
-        html.P("Macroeconomic indicators for Türkiye", 
+        html.P("Macroeconomic indicators for Turkey",
                style={"textAlign": "center", "color": "#ccc", "margin": "10px 0 0"})
     ], style={
         "background": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
@@ -266,12 +273,12 @@ app.layout = html.Div([
     html.Div([
         html.H3("Key Performance Indicators", style={"marginBottom": "15px", "color": "#333"}),
         html.Div([
-            kpi_card("GDP Growth", gdp_latest, "%", "#2ca02c" if isinstance(gdp_latest, float) and gdp_latest >= 0 else "#d62728"),
-            kpi_card("Exports", exp_latest, "% GDP", "#2ca02c"),
-            kpi_card("Imports", imp_latest, "% GDP", "#d62728"),
-            kpi_card("Trade Balance", trade_balance, "% GDP", "#2ca02c" if isinstance(trade_balance, float) and trade_balance >= 0 else "#d62728"),
-            kpi_card("Youth Unemployment", unem_latest, "%", "#ff7f0e"),
-            kpi_card("Inflation Rate", infl_latest, "%", "#d62728" if isinstance(infl_latest, float) and infl_latest > 5 else "#ff7f0e")
+            kpi_card("GDP Growth", gdp_latest, "%", "#2ca02c" if isinstance(gdp_latest, float) and gdp_latest >= 0 else "#d62728", gdp_latest_year),
+            kpi_card("Exports", exp_latest, "% GDP", "#2ca02c", trade_latest_year),
+            kpi_card("Imports", imp_latest, "% GDP", "#d62728", trade_latest_year),
+            kpi_card("Trade Balance", trade_balance, "% GDP", "#2ca02c" if isinstance(trade_balance, float) and trade_balance >= 0 else "#d62728", trade_latest_year),
+            kpi_card("Youth Unemployment", unem_latest, "%", "#ff7f0e", unem_latest_year),
+            kpi_card("Inflation Rate", infl_latest, "%", "#d62728" if isinstance(infl_latest, float) and infl_latest > 5 else "#ff7f0e", infl_latest_year)
         ], style={
             "display": "grid", "gridTemplateColumns": "repeat(auto-fit, minmax(200px, 1fr))",
             "gap": "15px", "marginBottom": "30px"
@@ -284,21 +291,21 @@ app.layout = html.Div([
         
         # Row 1: GDP and Trade
         html.Div([
-            html.Div([dcc.Graph(figure=fig_gdp)], style={"width": "50%"}),
-            html.Div([dcc.Graph(figure=fig_trade)], style={"width": "50%"})
-        ], style={"display": "flex", "marginBottom": "20px"}),
+            html.Div([dcc.Graph(figure=fig_gdp)], style={"width": "49.75%"}),
+            html.Div([dcc.Graph(figure=fig_trade)], style={"width": "49.75%"})
+        ], style={"display": "flex", "gap": "0.5%", "marginBottom": "0.5%"}),
         
         # Row 2: Trade Balance and Unemployment
         html.Div([
-            html.Div([dcc.Graph(figure=fig_balance)], style={"width": "50%"}),
-            html.Div([dcc.Graph(figure=fig_unem)], style={"width": "50%"})
-        ], style={"display": "flex", "marginBottom": "20px"}),
+            html.Div([dcc.Graph(figure=fig_balance)], style={"width": "49.75%"}),
+            html.Div([dcc.Graph(figure=fig_unem)], style={"width": "49.75%"})
+        ], style={"display": "flex", "gap": "0.5%", "marginBottom": "0.5%"}),
         
         # Row 3: Inflation and Overview
         html.Div([
-            html.Div([dcc.Graph(figure=fig_infl)], style={"width": "50%"}),
-            html.Div([dcc.Graph(figure=fig_overlay)], style={"width": "50%"})
-        ], style={"display": "flex", "marginBottom": "20px"})
+            html.Div([dcc.Graph(figure=fig_infl)], style={"width": "49.75%"}),
+            html.Div([dcc.Graph(figure=fig_overlay)], style={"width": "49.75%"})
+        ], style={"display": "flex", "gap": "0.5%", "marginBottom": "0.5%"})
         
     ], style={"padding": "0 20px"}),
     
