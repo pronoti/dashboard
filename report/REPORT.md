@@ -25,7 +25,7 @@
    8. [Turkey Economic Indicators Overview](#turkey-economic-indicators-overview)
 6. [Limitations and Validity](#limitations-and-validity)
 7. [Conclusion](#conclusion)
-8. [References (Vancouver Style)](#references-vancouver-style)
+8. [References](#references)
 
 ---
 
